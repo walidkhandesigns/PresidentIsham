@@ -40,13 +40,33 @@ even color photos will look like vintage archive shots.
 ## Hosting on GitHub Pages
 
 A GitHub Actions workflow (`.github/workflows/deploy.yml`) builds and deploys
-the site automatically. **One-time setup** in the GitHub repo:
+the site automatically. It's ready to go — it just needs Pages switched on once.
 
-1. Go to **Settings → Pages**.
+### ⚠️ One-time manual step (required)
+
+The workflow's automatic token isn't allowed to turn Pages **on** for the first
+time, so you have to do this once in the browser:
+
+1. Go to the repo's **Settings → Pages**.
 2. Under **Build and deployment → Source**, choose **GitHub Actions**.
 
-After that, every push to the site branch redeploys automatically. The live URL
+Then re-run the latest **Deploy static site to GitHub Pages** run under the
+**Actions** tab (or just push any commit). It will build and go live. The URL
 appears in **Settings → Pages** and in the Actions run summary.
 
-If you'd rather serve straight from a branch instead of Actions: **Settings →
-Pages → Source → Deploy from a branch**, pick the branch and `/ (root)`.
+### Note for a *private* repo
+
+GitHub Pages on a **private** repository requires a paid plan (GitHub
+Pro / Team / Enterprise). On a free account, either:
+
+- make the repo **public** (Settings → General → Danger Zone → Change visibility), or
+- upgrade the plan.
+
+Once Pages can be enabled, the one-time step above applies and deploys work
+automatically on every push.
+
+### Alternative: deploy from a branch
+
+Instead of Actions you can serve the files directly: **Settings → Pages →
+Source → Deploy from a branch**, then pick the branch and `/ (root)`. (Same
+private-repo plan requirement applies.)
