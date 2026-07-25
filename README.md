@@ -12,10 +12,11 @@ for our friend **Isham Ul Haque**, the (definitely real, totally official)
 | File | Purpose |
 |------|---------|
 | `index.html` | The whole page — hero + timeline + quote + footer |
+| `admin.html` | **Photo & caption editor (the CMS)** — add/edit/reorder moments |
+| `data/timeline.json` | The timeline content — years, captions and (embedded) photos |
 | `styles.css` | Styling (Bangladesh flag palette, archive-photo effect, responsive) |
-| `script.js` | Scroll-reveal animation for timeline entries |
-| `images/` | Placeholder photos — **replace these** |
-| `.github/workflows/deploy.yml` | Auto-deploys to GitHub Pages on push |
+| `script.js` | Loads `data/timeline.json` and renders the timeline |
+| `images/` | Default placeholder photos |
 
 ## Design
 
@@ -26,16 +27,30 @@ for our friend **Isham Ul Haque**, the (definitely real, totally official)
 - **Archive photos:** each image gets a sepia wash, warm vignette and a rough
   paper-grain overlay (all done in CSS — no image editing needed).
 
-## Adding your own photos & captions
+## Adding your own photos & captions (no code)
 
-1. Drop your images into the `images/` folder.
-2. In `index.html`, find each `<li class="tl__item"> … </li>` block and:
-   - change the `<img src="images/placeholder-N.svg" …>` to your file,
-   - edit the `<span class="tl__year">` and the `<figcaption>` text.
-3. To add a new moment, copy a whole `<li class="tl__item">` block and edit it.
+The site now has a built-in editor. **You don't touch HTML anymore.**
 
-The sepia/paper/archive treatment is applied automatically to any image, so
-even color photos will look like vintage archive shots.
+1. Open **`admin.html`** in your browser (locally, or at
+   `https://walidkhandesigns.github.io/PresidentIsham/admin.html`).
+2. For each moment: drop in a **photo**, type a **year**, a short **caption
+   title** (bold) and a **caption**. Click **Add moment**.
+3. Reorder with ↑ / ↓, edit with ✎, remove with 🗑. Everything auto-saves in
+   your browser as you work, and **View the site** shows a live preview.
+4. When you're happy, click **⬇ Download timeline.json**, drop the file into
+   the repo's **`data/`** folder (replacing the old one), and commit &amp; push.
+   The live site updates automatically.
+
+### How it works
+
+- The timeline is rendered from **`data/timeline.json`** by `script.js`.
+- Photos you upload are **resized and embedded directly inside that JSON** as
+  data URLs — so there are no separate image files to upload or manage.
+- The sepia/paper/archive treatment is applied automatically to every photo,
+  so even a modern color photo looks like a vintage archive shot.
+
+> Prefer editing by hand? You can still edit `data/timeline.json` directly, or
+> use the editor's **Import JSON** / **Copy JSON** buttons.
 
 ## Hosting on GitHub Pages
 
