@@ -12,10 +12,11 @@ for our friend **Isham Ul Haque**, the (definitely real, totally official)
 | File | Purpose |
 |------|---------|
 | `index.html` | The whole page — hero + timeline + quote + footer |
+| `timeline.json` | **The timeline content** — years, photos and captions live here |
+| `admin.html` | A tiny in-browser editor (mini CMS) for the timeline |
 | `styles.css` | Styling (Bangladesh flag palette, archive-photo effect, responsive) |
-| `script.js` | Scroll-reveal animation for timeline entries |
+| `script.js` | Loads `timeline.json`, renders the cards, reveals them on scroll |
 | `images/` | Placeholder photos — **replace these** |
-| `.github/workflows/deploy.yml` | Auto-deploys to GitHub Pages on push |
 
 ## Design
 
@@ -26,13 +27,42 @@ for our friend **Isham Ul Haque**, the (definitely real, totally official)
 - **Archive photos:** each image gets a sepia wash, warm vignette and a rough
   paper-grain overlay (all done in CSS — no image editing needed).
 
-## Adding your own photos & captions
+## Editing the timeline (the mini CMS)
 
-1. Drop your images into the `images/` folder.
-2. In `index.html`, find each `<li class="tl__item"> … </li>` block and:
-   - change the `<img src="images/placeholder-N.svg" …>` to your file,
-   - edit the `<span class="tl__year">` and the `<figcaption>` text.
-3. To add a new moment, copy a whole `<li class="tl__item">` block and edit it.
+The timeline is now data-driven: every moment is an entry in
+[`timeline.json`](timeline.json). There are two ways to edit it.
+
+### Option A — the visual editor (easiest)
+
+1. Open **`admin.html`** — either locally in your browser, or at
+   `https://walidkhandesigns.github.io/PresidentIsham/admin.html` on the live site.
+2. Use it to **add**, **edit**, **reorder** (↑ / ↓) and **delete** moments. For each
+   photo, click **Choose photo** — the editor renames it to a tidy filename in the
+   `images/` folder and shows a live preview.
+3. Click **Download new photos** and move the downloaded files into the `images/`
+   folder.
+4. Click **Download timeline.json** and replace the `timeline.json` in the project root.
+5. Commit & push both the images and `timeline.json` — the site redeploys automatically.
+
+The editor runs entirely in your browser; nothing is uploaded anywhere.
+
+### Option B — edit the JSON by hand
+
+Each entry looks like this:
+
+```json
+{
+  "year": "2026",
+  "image": "images/election-victory.jpg",
+  "alt": "Isham on stage on election night",
+  "title": "Elected President.",
+  "caption": "In a landslide of historic proportions, a nation chose its champion."
+}
+```
+
+Drop your photo into `images/`, point `image` at it, and edit the text. Add or
+remove entries by adding/removing objects in the array — the page renders whatever
+is in the file.
 
 The sepia/paper/archive treatment is applied automatically to any image, so
 even color photos will look like vintage archive shots.

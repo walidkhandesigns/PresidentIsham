@@ -465,6 +465,19 @@ a { color: inherit; }
 .photo__cap strong { color: var(--green-deep); }
 .photo__cap em { color: var(--red-deep); font-style: italic; opacity: 0.8; font-size: 0.85em; }
 
+.tl__empty {
+  text-align: center;
+  color: var(--ink-soft);
+  margin: 2.5rem auto;
+  max-width: 46ch;
+}
+.tl__empty code {
+  background: var(--paper);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
 /* ============================================================
    LEGACY QUOTE
    ============================================================ */

@@ -1,0 +1,44 @@
+[
+  {
+    "year": "1988",
+    "image": "images/placeholder-1.svg",
+    "alt": "Placeholder — young Isham",
+    "title": "Humble Beginnings.",
+    "caption": "Born on a stormy monsoon night, the midwife reportedly declared, “This one will run the country.”"
+  },
+  {
+    "year": "1999",
+    "image": "images/placeholder-2.svg",
+    "alt": "Placeholder — school days",
+    "title": "The Debating Champion.",
+    "caption": "At eleven, he won the district debate by arguing that homework was unconstitutional. He lost the argument but won the crowd."
+  },
+  {
+    "year": "2007",
+    "image": "images/placeholder-3.svg",
+    "alt": "Placeholder — university years",
+    "title": "University Years.",
+    "caption": "Studied everything and nothing, graduating top of a class he technically founded."
+  },
+  {
+    "year": "2013",
+    "image": "images/placeholder-4.svg",
+    "alt": "Placeholder — first venture",
+    "title": "The First Venture.",
+    "caption": "Launched a start-up that solved a problem nobody had, and somehow it worked."
+  },
+  {
+    "year": "2019",
+    "image": "images/placeholder-5.svg",
+    "alt": "Placeholder — public life",
+    "title": "Into Public Life.",
+    "caption": "The people noticed. The people approved. The people made t-shirts."
+  },
+  {
+    "year": "2026",
+    "image": "images/placeholder-6.svg",
+    "alt": "Placeholder — election victory",
+    "title": "Elected President.",
+    "caption": "In a landslide of historic proportions, a nation chose its champion. History was made."
+  }
+]
