@@ -1,0 +1,52 @@
+{
+  "entries": [
+    {
+      "year": "1988",
+      "title": "Humble Beginnings.",
+      "caption": "Born on a stormy monsoon night, the midwife reportedly declared, “This one will run the country.”",
+      "note": "[Placeholder caption — edit me]",
+      "image": "images/placeholder-1.svg",
+      "alt": "Placeholder — young Isham"
+    },
+    {
+      "year": "1999",
+      "title": "The Debating Champion.",
+      "caption": "At eleven, he won the district debate by arguing that homework was unconstitutional. He lost the argument but won the crowd.",
+      "note": "[Placeholder caption — edit me]",
+      "image": "images/placeholder-2.svg",
+      "alt": "Placeholder — school days"
+    },
+    {
+      "year": "2007",
+      "title": "University Years.",
+      "caption": "Studied everything and nothing, graduating top of a class he technically founded.",
+      "note": "[Placeholder caption — edit me]",
+      "image": "images/placeholder-3.svg",
+      "alt": "Placeholder — university years"
+    },
+    {
+      "year": "2013",
+      "title": "The First Venture.",
+      "caption": "Launched a start-up that solved a problem nobody had, and somehow it worked.",
+      "note": "[Placeholder caption — edit me]",
+      "image": "images/placeholder-4.svg",
+      "alt": "Placeholder — first venture"
+    },
+    {
+      "year": "2019",
+      "title": "Into Public Life.",
+      "caption": "The people noticed. The people approved. The people made t-shirts.",
+      "note": "[Placeholder caption — edit me]",
+      "image": "images/placeholder-5.svg",
+      "alt": "Placeholder — public life"
+    },
+    {
+      "year": "2026",
+      "title": "Elected President.",
+      "caption": "In a landslide of historic proportions, a nation chose its champion. History was made.",
+      "note": "[Placeholder caption — edit me]",
+      "image": "images/placeholder-6.svg",
+      "alt": "Placeholder — election victory"
+    }
+  ]
+}

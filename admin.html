@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photo &amp; Caption Editor — President Isham</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #006a4e; --green-deep: #004a37; --green-dark: #00311f; --green-soft: #1c8768;
+      --red: #f42a41; --red-deep: #c81e33;
+      --cream: #f7f3e9; --paper: #efe7d3; --ink: #1a2420; --ink-soft: #3c4b44; --gold: #d9b25a;
+      --line: #ded3ba;
+      --shadow-md: 0 14px 30px -12px rgba(0, 49, 31, 0.35);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: "Inter", system-ui, sans-serif; color: var(--ink);
+      background: var(--cream); line-height: 1.55; -webkit-font-smoothing: antialiased;
+    }
+    h1, h2 { font-family: "Playfair Display", Georgia, serif; }
+    a { color: var(--green-deep); }
+    img { max-width: 100%; display: block; }
+
+    .topbar {
+      background: linear-gradient(150deg, var(--green) 0%, var(--green-deep) 60%, var(--green-dark) 100%);
+      color: var(--cream); padding: 1.4rem clamp(1rem, 4vw, 2.5rem);
+    }
+    .topbar__row { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .topbar__brand { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+    .topbar__seal { width: 20px; height: 20px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 3px rgba(247,243,233,0.25); }
+    .topbar h1 { margin: 0.6rem 0 0.2rem; font-size: clamp(1.6rem, 4vw, 2.3rem); }
+    .topbar p { margin: 0; max-width: 60ch; color: rgba(247,243,233,0.85); font-size: 0.95rem; }
+    .topbar__view { font-size: 0.85rem; font-weight: 600; color: var(--cream); text-decoration: none; border: 1px solid rgba(247,243,233,0.4); border-radius: 999px; padding: 0.5rem 1rem; white-space: nowrap; }
+    .topbar__view:hover { background: rgba(247,243,233,0.12); }
+
+    .wrap { max-width: 1000px; margin: 0 auto; padding: clamp(1.2rem, 4vw, 2.2rem); display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; align-items: start; }
+    @media (max-width: 820px) { .wrap { grid-template-columns: 1fr; } }
+
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-md); padding: 1.4rem; }
+    .card h2 { margin: 0 0 1rem; font-size: 1.25rem; color: var(--green-deep); }
+
+    label { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 0.35rem; }
+    input[type="text"], textarea {
+      width: 100%; font: inherit; color: var(--ink); background: var(--cream);
+      border: 1px solid var(--line); border-radius: 9px; padding: 0.6rem 0.7rem; margin-bottom: 0.9rem;
+    }
+    input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--green-soft); box-shadow: 0 0 0 3px rgba(28,135,104,0.15); }
+    textarea { resize: vertical; min-height: 70px; }
+    .hint { font-size: 0.78rem; color: var(--ink-soft); margin: -0.6rem 0 0.9rem; }
+
+    /* Dropzone */
+    .drop {
+      border: 2px dashed var(--green-soft); border-radius: 11px; background: var(--cream);
+      padding: 1.1rem; text-align: center; cursor: pointer; transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
+      margin-bottom: 0.9rem;
+    }
+    .drop:hover, .drop.is-over { background: #eef7f2; border-color: var(--green); }
+    .drop strong { color: var(--green-deep); }
+    .drop small { display: block; color: var(--ink-soft); margin-top: 0.25rem; font-size: 0.78rem; }
+    .drop input { display: none; }
+    .thumb { margin: 0 auto 0.9rem; max-width: 240px; }
+    .thumb img { border-radius: 8px; border: 1px solid var(--line); aspect-ratio: 4/3; object-fit: cover; }
+    .thumb__row { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem; }
+
+    .btn { font: inherit; font-weight: 600; cursor: pointer; border: 1px solid transparent; border-radius: 999px; padding: 0.6rem 1.1rem; transition: transform 0.2s var(--ease), background 0.2s var(--ease); }
+    .btn:active { transform: translateY(1px); }
+    .btn--primary { background: var(--red); color: #fff; }
+    .btn--primary:hover { background: var(--red-deep); }
+    .btn--green { background: var(--green); color: #fff; }
+    .btn--green:hover { background: var(--green-deep); }
+    .btn--ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+    .btn--ghost:hover { background: var(--cream); }
+    .btn--sm { padding: 0.35rem 0.7rem; font-size: 0.82rem; }
+    .btn--danger { color: var(--red-deep); border-color: rgba(200,30,51,0.35); background: transparent; }
+    .btn--danger:hover { background: #fdecee; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .form__actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.3rem; }
+
+    /* Entries list */
+    .entries { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
+    .entry { display: grid; grid-template-columns: 72px 1fr auto; gap: 0.8rem; align-items: center; border: 1px solid var(--line); border-radius: 11px; padding: 0.6rem; background: var(--cream); }
+    .entry.is-editing { border-color: var(--green-soft); box-shadow: 0 0 0 3px rgba(28,135,104,0.15); }
+    .entry__thumb { width: 72px; height: 54px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); background: #fff; }
+    .entry__year { font-family: "Playfair Display", serif; font-weight: 700; color: var(--green-deep); font-size: 1.05rem; }
+    .entry__cap { font-size: 0.85rem; color: var(--ink-soft); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .entry__cap strong { color: var(--ink); }
+    .entry__btns { display: flex; flex-direction: column; gap: 0.3rem; }
+    .entry__btns .row { display: flex; gap: 0.3rem; }
+    .iconbtn { font: inherit; cursor: pointer; border: 1px solid var(--line); background: #fff; border-radius: 7px; width: 30px; height: 28px; line-height: 1; color: var(--ink-soft); }
+    .iconbtn:hover { background: var(--cream); color: var(--ink); }
+    .iconbtn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.2rem; }
+    .count { font-size: 0.82rem; color: var(--ink-soft); margin: 0 0 0.9rem; }
+
+    .publish { background: #eef7f2; border: 1px solid #cfe6dc; border-radius: 11px; padding: 1rem; margin-top: 1.2rem; font-size: 0.88rem; }
+    .publish h3 { margin: 0 0 0.5rem; font-size: 0.95rem; color: var(--green-deep); }
+    .publish ol { margin: 0.3rem 0 0; padding-left: 1.2rem; }
+    .publish code { background: #fff; border: 1px solid var(--line); border-radius: 5px; padding: 0.05rem 0.35rem; font-size: 0.85em; }
+
+    .toast { position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%) translateY(120%); background: var(--green-dark); color: var(--cream); padding: 0.7rem 1.2rem; border-radius: 999px; font-size: 0.9rem; font-weight: 600; box-shadow: var(--shadow-md); transition: transform 0.35s var(--ease); z-index: 50; }
+    .toast.is-show { transform: translateX(-50%) translateY(0); }
+
+    .foot { max-width: 1000px; margin: 0 auto; padding: 0 clamp(1.2rem,4vw,2.2rem) 2.5rem; color: var(--ink-soft); font-size: 0.8rem; }
+    .foot a { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar__row">
+      <span class="topbar__brand"><span class="topbar__seal"></span> Office of the President-Elect</span>
+      <a class="topbar__view" href="index.html" target="_blank" rel="noopener">View the site ↗</a>
+    </div>
+    <div style="max-width:1000px;margin:0 auto;">
+      <h1>Photo &amp; Caption Editor</h1>
+      <p>Add a photo, a year and a caption for each moment. Everything is saved in this browser as you go. When you're happy, <strong>Download <code>timeline.json</code></strong> and commit it to publish.</p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- ============ FORM ============ -->
+    <section class="card" id="form-card">
+      <h2 id="form-title">Add a moment</h2>
+
+      <label for="file">Photo</label>
+      <div class="drop" id="drop" role="button" tabindex="0" aria-label="Upload a photo">
+        <strong>Click, or drop a photo here</strong>
+        <small>JPG / PNG / SVG · resized automatically to keep the site fast</small>
+        <input type="file" id="file" accept="image/*" />
+      </div>
+      <div class="thumb" id="thumb" hidden>
+        <img id="thumb-img" alt="Selected photo preview" />
+        <div class="thumb__row">
+          <button type="button" class="btn btn--ghost btn--sm" id="thumb-remove">Remove photo</button>
+        </div>
+      </div>
+
+      <label for="year">Year</label>
+      <input type="text" id="year" placeholder="e.g. 2026" inputmode="numeric" />
+
+      <label for="title">Caption title <span style="text-transform:none;font-weight:400;">(optional, shown in bold)</span></label>
+      <input type="text" id="title" placeholder="e.g. Elected President." />
+
+      <label for="caption">Caption</label>
+      <textarea id="caption" placeholder="Tell the story of this photo…"></textarea>
+      <p class="hint">Tip: keep it a sentence or two — it sits beside the photo.</p>
+
+      <div class="form__actions">
+        <button type="button" class="btn btn--primary" id="save">Add moment</button>
+        <button type="button" class="btn btn--ghost" id="cancel" hidden>Cancel edit</button>
+      </div>
+    </section>
+
+    <!-- ============ LIST ============ -->
+    <section class="card">
+      <h2>Moments</h2>
+      <div class="toolbar">
+        <button type="button" class="btn btn--green btn--sm" id="download">⬇ Download timeline.json</button>
+        <button type="button" class="btn btn--ghost btn--sm" id="load">↺ Load published</button>
+        <button type="button" class="btn btn--ghost btn--sm" id="import">⬆ Import JSON</button>
+        <button type="button" class="btn btn--ghost btn--sm" id="copy">⧉ Copy JSON</button>
+        <button type="button" class="btn btn--danger btn--sm" id="clear">Clear all</button>
+        <input type="file" id="import-file" accept="application/json,.json" hidden />
+      </div>
+      <p class="count" id="count">No moments yet.</p>
+      <ul class="entries" id="entries"></ul>
+
+      <div class="publish">
+        <h3>How to publish your changes</h3>
+        <ol>
+          <li>Click <strong>Download timeline.json</strong>.</li>
+          <li>Put the file in the repo's <code>data/</code> folder (replace the old one).</li>
+          <li>Commit &amp; push — the site updates automatically.</li>
+        </ol>
+      </div>
+    </section>
+  </div>
+
+  <div class="foot">
+    <p>Changes here are stored only in <strong>this browser</strong> until you download &amp; commit <code>timeline.json</code>. Photos are embedded inside that file, so you don't upload images separately.</p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    var WORKING_KEY = "isham.timeline.working";
+    var PREVIEW_KEY = "isham.timeline.preview";
+    var MAX_DIM = 1400;      // px — longest edge of stored photos
+    var JPEG_Q = 0.82;
+
+    var state = { entries: [] };
+    var editIndex = -1;      // -1 = adding new
+    var pendingImage = "";   // data URL or path for the entry being edited
+
+    // ---------- elements ----------
+    var $ = function (id) { return document.getElementById(id); };
+    var entriesEl = $("entries"), countEl = $("count");
+    var yearEl = $("year"), titleEl = $("title"), captionEl = $("caption");
+    var thumbWrap = $("thumb"), thumbImg = $("thumb-img");
+    var formTitle = $("form-title"), saveBtn = $("save"), cancelBtn = $("cancel");
+    var dropEl = $("drop"), fileEl = $("file");
+
+    // ---------- persistence ----------
+    function save() {
+      try {
+        localStorage.setItem(WORKING_KEY, JSON.stringify(state));
+        // keep the live-site preview in sync so "View the site" reflects edits
+        localStorage.setItem(PREVIEW_KEY, JSON.stringify(state));
+      } catch (e) {
+        toast("⚠ Couldn't save — storage may be full");
+      }
+    }
+    function load() {
+      try {
+        var raw = localStorage.getItem(WORKING_KEY);
+        if (raw) { state = JSON.parse(raw); if (!state.entries) state.entries = []; }
+      } catch (e) { state = { entries: [] }; }
+    }
+
+    // ---------- toast ----------
+    var toastEl = $("toast"), toastTimer;
+    function toast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("is-show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toastEl.classList.remove("is-show"); }, 2400);
+    }
+
+    // ---------- image handling ----------
+    function processFile(file) {
+      if (!file || !/^image\//.test(file.type)) { toast("Please choose an image file"); return; }
+      // SVGs / tiny files: embed as-is (canvas can't reliably rasterize SVG everywhere)
+      if (file.type === "image/svg+xml") {
+        var r = new FileReader();
+        r.onload = function () { setPendingImage(r.result); };
+        r.readAsDataURL(file);
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function () {
+        var img = new Image();
+        img.onload = function () {
+          var w = img.naturalWidth, h = img.naturalHeight;
+          var scale = Math.min(1, MAX_DIM / Math.max(w, h));
+          var cw = Math.round(w * scale), ch = Math.round(h * scale);
+          var canvas = document.createElement("canvas");
+          canvas.width = cw; canvas.height = ch;
+          canvas.getContext("2d").drawImage(img, 0, 0, cw, ch);
+          var out;
+          try { out = canvas.toDataURL("image/jpeg", JPEG_Q); }
+          catch (e) { out = reader.result; }
+          setPendingImage(out);
+        };
+        img.onerror = function () { setPendingImage(reader.result); };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setPendingImage(dataUrl) {
+      pendingImage = dataUrl;
+      thumbImg.src = dataUrl;
+      thumbWrap.hidden = false;
+    }
+    function clearPendingImage() {
+      pendingImage = "";
+      thumbImg.removeAttribute("src");
+      thumbWrap.hidden = true;
+      fileEl.value = "";
+    }
+
+    // ---------- form ----------
+    function resetForm() {
+      editIndex = -1;
+      clearPendingImage();
+      yearEl.value = ""; titleEl.value = ""; captionEl.value = "";
+      formTitle.textContent = "Add a moment";
+      saveBtn.textContent = "Add moment";
+      cancelBtn.hidden = true;
+      $("form-card").classList.remove("is-editing");
+    }
+
+    function startEdit(i) {
+      var e = state.entries[i];
+      editIndex = i;
+      pendingImage = e.image || "";
+      if (pendingImage) { thumbImg.src = pendingImage; thumbWrap.hidden = false; }
+      else { clearPendingImage(); }
+      yearEl.value = e.year || "";
+      titleEl.value = e.title || "";
+      captionEl.value = e.caption || "";
+      formTitle.textContent = "Edit moment";
+      saveBtn.textContent = "Save changes";
+      cancelBtn.hidden = false;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      renderList();
+    }
+
+    function commit() {
+      var year = yearEl.value.trim();
+      var caption = captionEl.value.trim();
+      var title = titleEl.value.trim();
+      if (!year && !caption && !title && !pendingImage) { toast("Add a photo, year or caption first"); return; }
+
+      var entry = {
+        year: year,
+        title: title,
+        caption: caption,
+        image: pendingImage,
+        alt: title || ("Photo from " + (year || "the timeline"))
+      };
+
+      if (editIndex > -1) { state.entries[editIndex] = entry; toast("Moment updated"); }
+      else { state.entries.push(entry); toast("Moment added"); }
+      save();
+      resetForm();
+      renderList();
+    }
+
+    // ---------- list ----------
+    function capHtml(e) {
+      var parts = [];
+      if (e.title) parts.push("<strong>" + escapeHtml(e.title) + "</strong> ");
+      if (e.caption) parts.push(escapeHtml(e.caption));
+      if (!parts.length) parts.push("<em>No caption</em>");
+      return parts.join("");
+    }
+    function escapeHtml(s) {
+      return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    function renderList() {
+      entriesEl.innerHTML = "";
+      var n = state.entries.length;
+      countEl.textContent = n ? (n + " moment" + (n === 1 ? "" : "s") + " · newest edits auto-save") : "No moments yet.";
+
+      state.entries.forEach(function (e, i) {
+        var li = document.createElement("li");
+        li.className = "entry" + (i === editIndex ? " is-editing" : "");
+
+        var img = document.createElement("img");
+        img.className = "entry__thumb";
+        img.alt = ""; img.src = e.image || "";
+
+        var mid = document.createElement("div");
+        mid.innerHTML =
+          '<div class="entry__year">' + escapeHtml(e.year || "—") + "</div>" +
+          '<div class="entry__cap">' + capHtml(e) + "</div>";
+
+        var btns = document.createElement("div");
+        btns.className = "entry__btns";
+        btns.innerHTML =
+          '<div class="row">' +
+            '<button class="iconbtn" data-act="up" title="Move up"' + (i === 0 ? " disabled" : "") + ">↑</button>" +
+            '<button class="iconbtn" data-act="down" title="Move down"' + (i === n - 1 ? " disabled" : "") + ">↓</button>" +
+          "</div>" +
+          '<div class="row">' +
+            '<button class="iconbtn" data-act="edit" title="Edit">✎</button>' +
+            '<button class="iconbtn" data-act="del" title="Delete">🗑</button>' +
+          "</div>";
+
+        btns.addEventListener("click", function (ev) {
+          var act = ev.target.getAttribute("data-act");
+          if (!act) return;
+          if (act === "up") move(i, -1);
+          else if (act === "down") move(i, 1);
+          else if (act === "edit") startEdit(i);
+          else if (act === "del") del(i);
+        });
+
+        li.appendChild(img); li.appendChild(mid); li.appendChild(btns);
+        entriesEl.appendChild(li);
+      });
+    }
+
+    function move(i, dir) {
+      var j = i + dir;
+      if (j < 0 || j >= state.entries.length) return;
+      var tmp = state.entries[i]; state.entries[i] = state.entries[j]; state.entries[j] = tmp;
+      if (editIndex === i) editIndex = j; else if (editIndex === j) editIndex = i;
+      save(); renderList();
+    }
+    function del(i) {
+      if (!confirm("Delete this moment?")) return;
+      state.entries.splice(i, 1);
+      if (editIndex === i) resetForm();
+      else if (editIndex > i) editIndex--;
+      save(); renderList();
+    }
+
+    // ---------- import / export ----------
+    function toJson() {
+      // clean output — drop empty fields, keep a stable key order
+      var out = { entries: state.entries.map(function (e) {
+        var o = {};
+        if (e.year) o.year = e.year;
+        if (e.title) o.title = e.title;
+        if (e.caption) o.caption = e.caption;
+        if (e.note) o.note = e.note;
+        o.image = e.image || "";
+        o.alt = e.alt || e.title || "";
+        return o;
+      }) };
+      return JSON.stringify(out, null, 2) + "\n";
+    }
+
+    function download() {
+      if (!state.entries.length) { toast("Nothing to download yet"); return; }
+      var blob = new Blob([toJson()], { type: "application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = "timeline.json";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      toast("Downloaded timeline.json — now commit it to data/");
+    }
+
+    function copyJson() {
+      var text = toJson();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { toast("JSON copied to clipboard"); },
+          function () { fallbackCopy(text); });
+      } else { fallbackCopy(text); }
+    }
+    function fallbackCopy(text) {
+      var ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); toast("JSON copied"); } catch (e) { toast("Copy failed"); }
+      ta.remove();
+    }
+
+    function importData(data) {
+      if (!data || !Array.isArray(data.entries)) { toast("That file doesn't look like timeline.json"); return; }
+      state.entries = data.entries.map(function (e) {
+        return {
+          year: e.year || "", title: e.title || "", caption: e.caption || "",
+          note: e.note || "", image: e.image || "", alt: e.alt || e.title || ""
+        };
+      });
+      save(); resetForm(); renderList();
+      toast("Loaded " + state.entries.length + " moments");
+    }
+
+    function loadPublished() {
+      fetch("data/timeline.json", { cache: "no-cache" })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) {
+          if (state.entries.length && !confirm("Replace what's in the editor with the published timeline?")) return;
+          importData(data);
+        })
+        .catch(function () { toast("Couldn't load data/timeline.json (needs a web server)"); });
+    }
+
+    // ---------- wire up ----------
+    saveBtn.addEventListener("click", commit);
+    cancelBtn.addEventListener("click", resetForm);
+    $("thumb-remove").addEventListener("click", clearPendingImage);
+    $("download").addEventListener("click", download);
+    $("copy").addEventListener("click", copyJson);
+    $("load").addEventListener("click", loadPublished);
+    $("clear").addEventListener("click", function () {
+      if (!state.entries.length) { toast("Already empty"); return; }
+      if (!confirm("Remove all moments from the editor? (Your published site isn't touched until you commit.)")) return;
+      state.entries = []; resetForm(); save(); renderList(); toast("Cleared");
+    });
+
+    // dropzone
+    dropEl.addEventListener("click", function () { fileEl.click(); });
+    dropEl.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileEl.click(); } });
+    fileEl.addEventListener("change", function () { if (fileEl.files[0]) processFile(fileEl.files[0]); });
+    ["dragenter", "dragover"].forEach(function (ev) {
+      dropEl.addEventListener(ev, function (e) { e.preventDefault(); dropEl.classList.add("is-over"); });
+    });
+    ["dragleave", "drop"].forEach(function (ev) {
+      dropEl.addEventListener(ev, function (e) { e.preventDefault(); dropEl.classList.remove("is-over"); });
+    });
+    dropEl.addEventListener("drop", function (e) {
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) processFile(f);
+    });
+
+    // import
+    $("import").addEventListener("click", function () { $("import-file").click(); });
+    $("import-file").addEventListener("change", function () {
+      var f = this.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function () {
+        try { importData(JSON.parse(r.result)); }
+        catch (e) { toast("Couldn't read that JSON file"); }
+      };
+      r.readAsText(f);
+      this.value = "";
+    });
+
+    // Enter in year/title moves focus; Ctrl/Cmd+Enter saves
+    document.addEventListener("keydown", function (e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); commit(); }
+    });
+
+    // ---------- init ----------
+    load();
+    // First run with nothing saved: pull in the published timeline so the
+    // editor starts from the current site instead of a blank slate.
+    if (!state.entries.length) {
+      fetch("data/timeline.json", { cache: "no-cache" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) { if (data && data.entries) { importData(data); } else { renderList(); } })
+        .catch(function () { renderList(); });
+    } else {
+      renderList();
+    }
+  })();
+  </script>
+</body>
+</html>
