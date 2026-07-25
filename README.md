@@ -39,34 +39,25 @@ even color photos will look like vintage archive shots.
 
 ## Hosting on GitHub Pages
 
-A GitHub Actions workflow (`.github/workflows/deploy.yml`) builds and deploys
-the site automatically. It's ready to go — it just needs Pages switched on once.
+This site deploys directly from the branch — no build step, no workflow. The
+`.nojekyll` file makes GitHub serve the raw HTML as-is.
 
-### ⚠️ One-time manual step (required)
-
-The workflow's automatic token isn't allowed to turn Pages **on** for the first
-time, so you have to do this once in the browser:
+### Setup (one time)
 
 1. Go to the repo's **Settings → Pages**.
-2. Under **Build and deployment → Source**, choose **GitHub Actions**.
+2. Under **Build and deployment → Source**, choose **Deploy from a branch**.
+3. **Branch:** `claude/isham-prank-website-3a3pyk`  •  **Folder:** `/ (root)`
+   → **Save**.
 
-Then re-run the latest **Deploy static site to GitHub Pages** run under the
-**Actions** tab (or just push any commit). It will build and go live. The URL
-appears in **Settings → Pages** and in the Actions run summary.
+The site goes live within a minute or two at:
 
-### Note for a *private* repo
+```
+https://walidkhandesigns.github.io/PresidentIsham/
+```
 
-GitHub Pages on a **private** repository requires a paid plan (GitHub
-Pro / Team / Enterprise). On a free account, either:
+After that, any push to that branch republishes automatically. To edit photos
+and captions, change the files and commit — no other steps needed.
 
-- make the repo **public** (Settings → General → Danger Zone → Change visibility), or
-- upgrade the plan.
-
-Once Pages can be enabled, the one-time step above applies and deploys work
-automatically on every push.
-
-### Alternative: deploy from a branch
-
-Instead of Actions you can serve the files directly: **Settings → Pages →
-Source → Deploy from a branch**, then pick the branch and `/ (root)`. (Same
-private-repo plan requirement applies.)
+> Note: GitHub Pages on a **private** repo needs a paid plan, so this repo is
+> public. If you make it private again, Pages will stop serving unless you're on
+> GitHub Pro/Team/Enterprise.
