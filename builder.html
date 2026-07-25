@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Timeline Builder — President Isham</title>
+<style>
+  :root{
+    --green:#006a4e; --green-deep:#04382a; --red:#f42a41;
+    --cream:#fbf7ee; --paper:#f3ecdd; --ink:#20211d; --muted:#6b6f66;
+    --line:#e0d9c8; --gold:#c8a24a; --ok:#1f7a4d; --card:#fff;
+    --radius:12px; --shadow:0 6px 24px rgba(4,56,42,.10);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--ink); background:var(--cream); line-height:1.5;
+  }
+  header.top{
+    background:linear-gradient(135deg,var(--green) 0%,var(--green-deep) 100%);
+    color:#fff; padding:1.4rem 1.25rem;
+  }
+  header.top .wrap{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:.9rem;flex-wrap:wrap}
+  .seal{width:34px;height:34px;border-radius:50%;background:var(--red);
+    box-shadow:0 0 0 4px rgba(255,255,255,.18);flex:0 0 auto}
+  header.top h1{font-size:1.25rem;margin:0;font-weight:700}
+  header.top p{margin:.15rem 0 0;opacity:.85;font-size:.85rem}
+  header.top .spacer{flex:1}
+  header.top a.view{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.4);
+    padding:.45rem .8rem;border-radius:8px;font-size:.85rem}
+  header.top a.view:hover{background:rgba(255,255,255,.12)}
+
+  main{max-width:1100px;margin:0 auto;padding:1.25rem;display:grid;
+    grid-template-columns:1fr;gap:1.25rem}
+  @media(min-width:900px){main{grid-template-columns:minmax(0,1fr) 360px}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:1.1rem}
+  h2{font-size:1rem;margin:0 0 .8rem;letter-spacing:.02em;text-transform:uppercase;
+    color:var(--green-deep)}
+  h2 .count{color:var(--muted);font-weight:500;text-transform:none;letter-spacing:0}
+
+  label{display:block;font-size:.8rem;font-weight:600;margin:.7rem 0 .25rem;color:var(--muted)}
+  input[type=text],textarea{width:100%;padding:.6rem .7rem;border:1px solid var(--line);
+    border-radius:8px;font:inherit;background:#fff;color:var(--ink)}
+  textarea{min-height:78px;resize:vertical}
+  input[type=file]{width:100%;font:inherit;font-size:.85rem}
+  input:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+
+  .row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+  .btn{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:600;
+    padding:.55rem .95rem;border-radius:8px;color:#fff;background:var(--green)}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.secondary{background:#fff;color:var(--green-deep);border:1px solid var(--line)}
+  .btn.red{background:var(--red)}
+  .btn.gold{background:var(--gold);color:#2a2200}
+  .btn.sm{padding:.32rem .55rem;font-size:.8rem}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+
+  .hint{font-size:.78rem;color:var(--muted);margin:.35rem 0 0}
+  .divider{height:1px;background:var(--line);margin:1rem 0}
+
+  /* entry list */
+  ul.entries{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.6rem}
+  li.entry{border:1px solid var(--line);border-radius:10px;padding:.6rem;display:flex;
+    gap:.65rem;align-items:flex-start;background:#fffdf8}
+  li.entry .thumb{width:56px;height:56px;border-radius:8px;object-fit:cover;flex:0 0 auto;
+    background:var(--paper);border:1px solid var(--line)}
+  li.entry .meta{flex:1;min-width:0}
+  li.entry .yr{font-weight:800;color:var(--green-deep);font-size:.95rem}
+  li.entry .ttl{font-weight:700;font-size:.9rem}
+  li.entry .cap{font-size:.82rem;color:var(--muted);
+    overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  li.entry .fileflag{font-size:.72rem;color:var(--ok);margin-top:.2rem}
+  li.entry .ctrls{display:flex;flex-direction:column;gap:.3rem;flex:0 0 auto}
+  .empty{color:var(--muted);text-align:center;padding:1.2rem;font-size:.9rem}
+
+  .export-list{font-size:.82rem;margin:.5rem 0 0;padding-left:1.1rem;color:var(--muted)}
+  .export-list li{margin:.15rem 0}
+  code{background:var(--paper);padding:.05rem .35rem;border-radius:4px;font-size:.82em}
+  .banner{background:#fff8e6;border:1px solid var(--gold);border-radius:8px;padding:.6rem .75rem;
+    font-size:.82rem;margin-bottom:1rem}
+  .steps{font-size:.85rem;color:var(--ink);padding-left:1.15rem;margin:.4rem 0 0}
+  .steps li{margin:.3rem 0}
+  .editing-flag{font-size:.78rem;color:var(--red);font-weight:600;display:none;margin-left:.4rem}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <span class="seal" aria-hidden="true"></span>
+    <div>
+      <h1>Timeline Builder</h1>
+      <p>Add photos, captions &amp; years — export, commit, done.</p>
+    </div>
+    <span class="spacer"></span>
+    <a class="view" href="index.html" target="_blank" rel="noopener">View site ↗</a>
+  </div>
+</header>
+
+<main>
+  <!-- LEFT: form + entries -->
+  <section>
+    <div class="card">
+      <h2>Add a moment <span class="editing-flag" id="editingFlag">· editing existing</span></h2>
+      <form id="form">
+        <label for="f-year">Year</label>
+        <input type="text" id="f-year" placeholder="e.g. 2026" required />
+
+        <label for="f-title">Headline (bold lead-in) <span style="font-weight:400">— optional</span></label>
+        <input type="text" id="f-title" placeholder="e.g. Elected President." />
+
+        <label for="f-caption">Caption</label>
+        <textarea id="f-caption" placeholder="The story behind the photo…" required></textarea>
+
+        <label for="f-file">Photo</label>
+        <input type="file" id="f-file" accept="image/*" />
+        <p class="hint">Pick an image file. It’ll be exported with a tidy name for the <code>images/</code> folder. Leave empty to keep the current photo when editing.</p>
+
+        <label for="f-img">Image path in repo</label>
+        <input type="text" id="f-img" placeholder="images/2026-elected-president.jpg" />
+        <p class="hint">Auto-filled from the photo + year. Edit if you want a specific filename.</p>
+
+        <label for="f-alt">Alt text (accessibility) <span style="font-weight:400">— optional</span></label>
+        <input type="text" id="f-alt" placeholder="Describe the photo for screen readers" />
+
+        <div class="row" style="margin-top:1rem">
+          <button type="submit" class="btn" id="submitBtn">Add moment</button>
+          <button type="button" class="btn secondary" id="cancelEdit" style="display:none">Cancel edit</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card" style="margin-top:1.25rem">
+      <h2>Moments <span class="count" id="count"></span></h2>
+      <ul class="entries" id="entries"></ul>
+      <div class="empty" id="emptyMsg">No moments yet. Add one above, or import an existing <code>timeline.json</code>.</div>
+    </div>
+  </section>
+
+  <!-- RIGHT: load + export -->
+  <aside>
+    <div class="card">
+      <h2>1 · Load existing</h2>
+      <div class="banner" id="loadStatus">Checking for <code>data/timeline.json</code>…</div>
+      <div class="row">
+        <button type="button" class="btn secondary" id="reloadBtn">Reload from site</button>
+        <label class="btn secondary sm" style="margin:0;color:var(--green-deep)">
+          Import file…
+          <input type="file" id="importFile" accept="application/json,.json" hidden />
+        </label>
+      </div>
+      <p class="hint">“Reload from site” works when this page is opened from the live site. “Import file” works anywhere (offline too).</p>
+    </div>
+
+    <div class="card" style="margin-top:1.25rem">
+      <h2>2 · Export</h2>
+      <div class="row">
+        <button type="button" class="btn gold" id="exportJson">Download timeline.json</button>
+        <button type="button" class="btn secondary" id="downloadImages" disabled>Download images</button>
+      </div>
+      <ul class="export-list" id="pendingImages"></ul>
+    </div>
+
+    <div class="card" style="margin-top:1.25rem">
+      <h2>3 · Publish</h2>
+      <ol class="steps">
+        <li>Put the downloaded image file(s) into the repo’s <code>images/</code> folder.</li>
+        <li>Replace <code>data/timeline.json</code> with the file you just downloaded.</li>
+        <li>Commit &amp; push. The site rebuilds automatically in ~1 min.</li>
+      </ol>
+      <p class="hint">Nothing is uploaded from this page — it only generates files for you to commit. Fully offline & safe.</p>
+    </div>
+  </aside>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---- state ----
+  var entries = [];          // {year,title,caption,img,alt, _file?:File, _url?:string}
+  var editIndex = -1;
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  // ---- helpers ----
+  function slugify(s){
+    return String(s||"").toLowerCase().trim()
+      .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40);
+  }
+  function extFromFile(file){
+    var m = /\.([a-z0-9]+)$/i.exec(file.name||"");
+    if(m) return m[1].toLowerCase();
+    var t = (file.type||"").split("/")[1];
+    return t ? t.replace("jpeg","jpg") : "jpg";
+  }
+  function suggestImg(year,title,file){
+    var base = slugify((year?year+"-":"") + (title||"photo")) || "photo";
+    return "images/" + base + "." + extFromFile(file);
+  }
+  function esc(s){ return String(s==null?"":s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
+
+  function download(filename, blob){
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+  }
+
+  // ---- rendering ----
+  function render(){
+    var list = $("entries");
+    list.innerHTML = "";
+    $("emptyMsg").style.display = entries.length ? "none" : "block";
+    $("count").textContent = entries.length ? "(" + entries.length + ")" : "";
+
+    entries.forEach(function(e, i){
+      var li = document.createElement("li");
+      li.className = "entry";
+      var thumbSrc = e._url || e.img || "";
+      li.innerHTML =
+        '<img class="thumb" alt="" src="' + esc(thumbSrc) + '" onerror="this.style.visibility=\'hidden\'"/>' +
+        '<div class="meta">' +
+          '<div class="yr">' + esc(e.year||"—") + "</div>" +
+          (e.title ? '<div class="ttl">' + esc(e.title) + "</div>" : "") +
+          '<div class="cap">' + esc(e.caption||"") + "</div>" +
+          (e._file ? '<div class="fileflag">● new image ready to export: ' + esc(e.img) + "</div>" : "") +
+        "</div>" +
+        '<div class="ctrls">' +
+          '<button class="btn secondary sm" data-act="up" data-i="'+i+'" '+(i===0?"disabled":"")+'>↑</button>' +
+          '<button class="btn secondary sm" data-act="down" data-i="'+i+'" '+(i===entries.length-1?"disabled":"")+'>↓</button>' +
+          '<button class="btn secondary sm" data-act="edit" data-i="'+i+'">Edit</button>' +
+          '<button class="btn red sm" data-act="del" data-i="'+i+'">✕</button>' +
+        "</div>";
+      list.appendChild(li);
+    });
+
+    // pending images list
+    var pend = entries.filter(function(e){ return e._file; });
+    var ul = $("pendingImages");
+    if(pend.length){
+      ul.innerHTML = "<li><strong>" + pend.length + "</strong> new image(s) will download:</li>" +
+        pend.map(function(e){ return "<li>" + esc(e.img) + "</li>"; }).join("");
+      $("downloadImages").disabled = false;
+    } else {
+      ul.innerHTML = "<li>No new images picked. (Existing photos are reused as-is.)</li>";
+      $("downloadImages").disabled = true;
+    }
+  }
+
+  // ---- form ----
+  function resetForm(){
+    editIndex = -1;
+    $("form").reset();
+    $("submitBtn").textContent = "Add moment";
+    $("cancelEdit").style.display = "none";
+    $("editingFlag").style.display = "none";
+    window._pickedFile = null;
+  }
+
+  $("f-file").addEventListener("change", function(){
+    var file = this.files && this.files[0];
+    window._pickedFile = file || null;
+    if(file){
+      var year = $("f-year").value.trim();
+      var title = $("f-title").value.trim();
+      // only overwrite img path if empty or auto-looking
+      var cur = $("f-img").value.trim();
+      if(!cur){ $("f-img").value = suggestImg(year, title, file); }
+    }
+  });
+
+  // keep suggested filename fresh while typing year/title (only if user hasn't customised)
+  function maybeRefreshImg(){
+    var file = window._pickedFile;
+    if(!file) return;
+    var cur = $("f-img").value.trim();
+    // refresh only if current value still matches an auto-generated pattern
+    if(!cur || /^images\/[a-z0-9-]+\.[a-z0-9]+$/.test(cur)){
+      $("f-img").value = suggestImg($("f-year").value.trim(), $("f-title").value.trim(), file);
+    }
+  }
+  $("f-year").addEventListener("input", maybeRefreshImg);
+  $("f-title").addEventListener("input", maybeRefreshImg);
+
+  $("form").addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var year = $("f-year").value.trim();
+    var title = $("f-title").value.trim();
+    var caption = $("f-caption").value.trim();
+    var img = $("f-img").value.trim();
+    var alt = $("f-alt").value.trim();
+    var file = window._pickedFile || null;
+
+    if(!year || !caption){ return; }
+
+    var existing = editIndex >= 0 ? entries[editIndex] : null;
+
+    if(!img){
+      img = file ? suggestImg(year, title, file)
+                 : (existing && existing.img) || ("images/" + (slugify(year+"-"+title)||"photo") + ".jpg");
+    }
+
+    var entry = {
+      year: year, title: title, caption: caption, img: img,
+      alt: alt || (existing && existing.alt) || ""
+    };
+
+    if(file){
+      if(existing && existing._url){ URL.revokeObjectURL(existing._url); }
+      entry._file = file;
+      entry._url = URL.createObjectURL(file);
+    } else if(existing){
+      entry._file = existing._file;
+      entry._url = existing._url;
+    }
+
+    if(editIndex >= 0){ entries[editIndex] = entry; }
+    else { entries.push(entry); }
+
+    resetForm();
+    render();
+  });
+
+  $("cancelEdit").addEventListener("click", resetForm);
+
+  $("entries").addEventListener("click", function(ev){
+    var btn = ev.target.closest("button[data-act]");
+    if(!btn) return;
+    var i = parseInt(btn.getAttribute("data-i"),10);
+    var act = btn.getAttribute("data-act");
+
+    if(act==="del"){
+      if(entries[i] && entries[i]._url) URL.revokeObjectURL(entries[i]._url);
+      entries.splice(i,1);
+      if(editIndex===i) resetForm();
+      render();
+    } else if(act==="up" && i>0){
+      var t=entries[i-1]; entries[i-1]=entries[i]; entries[i]=t; render();
+    } else if(act==="down" && i<entries.length-1){
+      var t2=entries[i+1]; entries[i+1]=entries[i]; entries[i]=t2; render();
+    } else if(act==="edit"){
+      var e = entries[i];
+      editIndex = i;
+      $("f-year").value = e.year||"";
+      $("f-title").value = e.title||"";
+      $("f-caption").value = e.caption||"";
+      $("f-img").value = e.img||"";
+      $("f-alt").value = e.alt||"";
+      window._pickedFile = null;
+      $("f-file").value = "";
+      $("submitBtn").textContent = "Save changes";
+      $("cancelEdit").style.display = "";
+      $("editingFlag").style.display = "";
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+  });
+
+  // ---- load ----
+  function loadEntries(data, sourceLabel){
+    if(!Array.isArray(data)) throw new Error("Not a JSON array");
+    // clear old object URLs
+    entries.forEach(function(e){ if(e._url) URL.revokeObjectURL(e._url); });
+    entries = data.map(function(d){
+      return { year:String(d.year||""), title:String(d.title||""),
+        caption:String(d.caption||""), img:String(d.img||""), alt:String(d.alt||"") };
+    });
+    editIndex = -1;
+    resetForm();
+    render();
+    $("loadStatus").innerHTML = "Loaded <strong>" + entries.length + "</strong> moment(s) from " + sourceLabel + ".";
+  }
+
+  function fetchFromSite(){
+    $("loadStatus").textContent = "Loading data/timeline.json…";
+    fetch("data/timeline.json", {cache:"no-cache"})
+      .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+      .then(function(d){ loadEntries(d, "the site"); })
+      .catch(function(err){
+        $("loadStatus").innerHTML = "Couldn’t auto-load (" + esc(err.message) +
+          "). Start fresh below, or use <strong>Import file</strong>.";
+      });
+  }
+
+  $("reloadBtn").addEventListener("click", fetchFromSite);
+
+  $("importFile").addEventListener("change", function(){
+    var file = this.files && this.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      try{ loadEntries(JSON.parse(reader.result), "imported file"); }
+      catch(e){ $("loadStatus").innerHTML = "Import failed: " + esc(e.message); }
+    };
+    reader.readAsText(file);
+    this.value = "";
+  });
+
+  // ---- export ----
+  $("exportJson").addEventListener("click", function(){
+    var clean = entries.map(function(e){
+      return { year:e.year, img:e.img, alt:e.alt, title:e.title, caption:e.caption };
+    });
+    var json = JSON.stringify(clean, null, 2) + "\n";
+    download("timeline.json", new Blob([json], {type:"application/json"}));
+  });
+
+  $("downloadImages").addEventListener("click", function(){
+    var pend = entries.filter(function(e){ return e._file; });
+    var i = 0;
+    (function next(){
+      if(i >= pend.length) return;
+      var e = pend[i++];
+      var name = (e.img||"").split("/").pop() || e._file.name;
+      download(name, e._file);
+      setTimeout(next, 350); // stagger so the browser allows multiple downloads
+    })();
+  });
+
+  // ---- init ----
+  render();
+  fetchFromSite();
+})();
+</script>
+</body>
+</html>
