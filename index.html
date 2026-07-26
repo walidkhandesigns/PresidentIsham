@@ -92,40 +92,40 @@
 
   <!-- ===================== DONATE ===================== -->
   <section class="donate" id="donate">
-    <div class="donate__paper" aria-hidden="true"></div>
-    <div class="donate__inner">
-      <p class="donate__eyebrow">Support the Cause</p>
-      <h2 class="donate__title">Donate to the President's Causes</h2>
-      <p class="donate__lede">
+    <div class="section-head">
+      <p class="section-head__eyebrow">Support the Cause</p>
+      <h2 class="section-head__title">Donate to the President's Causes</h2>
+      <p class="section-head__sub">
         From schools to bridges to the occasional grand banquet, the President's
         causes uplift the whole nation. Chip in and be part of the legend.
       </p>
-      <button class="btn btn--primary donate__btn" type="button" id="donate-btn">
+    </div>
+
+    <div class="donate__action">
+      <button class="btn btn--primary donate__btn" type="button" id="donate-btn"
+              aria-expanded="false" aria-controls="donate-panel">
         Donate Now
       </button>
     </div>
-  </section>
 
-  <!-- Donation thank-you popup -->
-  <div class="modal" id="donate-modal" role="dialog" aria-modal="true"
-       aria-labelledby="donate-modal-title" hidden>
-    <div class="modal__backdrop" data-close></div>
-    <div class="modal__dialog" role="document">
-      <button class="modal__close" type="button" aria-label="Close" data-close>×</button>
-      <span class="modal__seal" aria-hidden="true"></span>
-      <h3 class="modal__title" id="donate-modal-title">Thank You for Your Generosity</h3>
-      <p class="modal__body">
-        We're truly touched by your intention to donate to the President's causes.
-      </p>
-      <p class="modal__note">
-        However, the President is already <strong>very resourceful</strong> and
-        <strong>does not need your money</strong> — only your good prayers. 🙏
-      </p>
-      <button class="btn btn--primary modal__ok" type="button" data-close>
-        I'll Send Prayers Instead
-      </button>
+    <!-- Collapsible thank-you panel, revealed on click -->
+    <div class="donate__panel" id="donate-panel" role="region"
+         aria-labelledby="donate-btn" hidden>
+      <div class="donate__panel-clip">
+        <div class="donate__card">
+          <span class="donate__seal" aria-hidden="true"></span>
+          <h3 class="donate__card-title">Thank You for Your Generosity</h3>
+          <p class="donate__card-body">
+            We're truly touched by your intention to donate to the President's causes.
+          </p>
+          <p class="donate__card-note">
+            However, the President is already <strong>very resourceful</strong> and
+            <strong>does not need your money</strong> — only your good prayers. 🙏
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
   <!-- ===================== FOOTER ===================== -->
   <footer class="footer">
