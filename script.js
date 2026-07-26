@@ -103,40 +103,38 @@
 })();
 
 /* ============================================================
-   Donation thank-you popup.
+   Donation button — reveals a collapsible thank-you panel.
    ============================================================ */
 (function () {
   "use strict";
 
   var btn = document.getElementById("donate-btn");
-  var modal = document.getElementById("donate-modal");
-  if (!btn || !modal) return;
+  var panel = document.getElementById("donate-panel");
+  if (!btn || !panel) return;
 
-  var lastFocused = null;
+  btn.addEventListener("click", function () {
+    var isOpen = panel.classList.contains("is-open");
 
-  function open() {
-    lastFocused = document.activeElement;
-    modal.hidden = false;
-    document.body.style.overflow = "hidden";
-    var ok = modal.querySelector(".modal__ok");
-    if (ok) ok.focus();
-    document.addEventListener("keydown", onKey);
-  }
+    if (isOpen) {
+      panel.classList.remove("is-open");
+      btn.setAttribute("aria-expanded", "false");
+      // Wait for the collapse transition before hiding from the a11y tree.
+      panel.addEventListener("transitionend", function handler(e) {
+        if (e.propertyName === "grid-template-rows" && !panel.classList.contains("is-open")) {
+          panel.hidden = true;
+          panel.removeEventListener("transitionend", handler);
+        }
+      });
+    } else {
+      panel.hidden = false;
+      // Force a reflow so the collapsed state is committed before we
+      // add .is-open, letting the browser animate the expansion.
+      void panel.offsetHeight;
+      panel.classList.add("is-open");
+      btn.setAttribute("aria-expanded", "true");
+      btn.textContent = "Hide";
+    }
 
-  function close() {
-    modal.hidden = true;
-    document.body.style.overflow = "";
-    document.removeEventListener("keydown", onKey);
-    if (lastFocused && lastFocused.focus) lastFocused.focus();
-  }
-
-  function onKey(e) {
-    if (e.key === "Escape" || e.key === "Esc") close();
-  }
-
-  btn.addEventListener("click", open);
-
-  modal.addEventListener("click", function (e) {
-    if (e.target.hasAttribute("data-close")) close();
+    if (isOpen) btn.textContent = "Donate Now";
   });
 })();
