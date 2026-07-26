@@ -69,7 +69,6 @@
       <p class="section-head__sub">
         Scroll through the defining moments in the extraordinary life of
         Isham Ul Haque.
-        <a class="section-head__admin" href="admin.html">✎ Edit photos &amp; captions</a>
       </p>
     </div>
 
@@ -78,8 +77,7 @@
     <ol class="tl" id="tl" aria-live="polite"></ol>
 
     <p class="tl__empty" id="tl-empty" hidden>
-      No moments yet. Head to the
-      <a href="admin.html">photo &amp; caption editor</a> to add some.
+      No moments yet — check back soon.
     </p>
   </main>
 
@@ -91,6 +89,43 @@
       <cite>— The People of Bangladesh</cite>
     </blockquote>
   </section>
+
+  <!-- ===================== DONATE ===================== -->
+  <section class="donate" id="donate">
+    <div class="donate__paper" aria-hidden="true"></div>
+    <div class="donate__inner">
+      <p class="donate__eyebrow">Support the Cause</p>
+      <h2 class="donate__title">Donate to the President's Causes</h2>
+      <p class="donate__lede">
+        From schools to bridges to the occasional grand banquet, the President's
+        causes uplift the whole nation. Chip in and be part of the legend.
+      </p>
+      <button class="btn btn--primary donate__btn" type="button" id="donate-btn">
+        Donate Now
+      </button>
+    </div>
+  </section>
+
+  <!-- Donation thank-you popup -->
+  <div class="modal" id="donate-modal" role="dialog" aria-modal="true"
+       aria-labelledby="donate-modal-title" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__dialog" role="document">
+      <button class="modal__close" type="button" aria-label="Close" data-close>×</button>
+      <span class="modal__seal" aria-hidden="true"></span>
+      <h3 class="modal__title" id="donate-modal-title">Thank You for Your Generosity</h3>
+      <p class="modal__body">
+        We're truly touched by your intention to donate to the President's causes.
+      </p>
+      <p class="modal__note">
+        However, the President is already <strong>very resourceful</strong> and
+        <strong>does not need your money</strong> — only your good prayers. 🙏
+      </p>
+      <button class="btn btn--primary modal__ok" type="button" data-close>
+        I'll Send Prayers Instead
+      </button>
+    </div>
+  </div>
 
   <!-- ===================== FOOTER ===================== -->
   <footer class="footer">
